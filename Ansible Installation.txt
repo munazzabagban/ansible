@@ -1,0 +1,76 @@
+   Ansible Installation
+
+apt-add-repository ppa:ansible/ansible
+
+apt-get update
+apt-get install ansible
+
+--------------------------------------------------------------------
+
+one master server , 3 Remote server
+using master server to update this 3 server using Ansible
+-----------------------------------------------------------
+1- connect master server
+-install Ansible 
+- edit host file
+  sudo vim /etc/ansible/hosts
+   - edit in  group
+[servers]
+	server-1 ansible_host=serveer-public-ip
+	server-2 ansible_host=serveer-public-ip
+	server-3 ansible_host=serveer-public-ip
+
+------------------------------------------------------------
+	
+ create a file to store a pem file
+ - mkdir keys
+-cd keys
+ -pwd
+-----------------------------------------------
+ now coping .pem file from lovate machine to  master server using (scp )
+-scp -i "ubuntu.pem" ubuntu.pem ubuntu@ec2-18-221-212-202.us-east-2.compute.amazonaws.com:/home/ubuntu/key
+
+ - if permission denie
+chmod 400 scp -i "ubuntu.pem" ubuntu.pem ubuntu@ec2-18-221-212-202.us-east-2.compute.amazonaws.com:/home/ubuntu/key
+----------------------------------------------------------------
+chek keys folder u will get ubuntu.pem file
+ls 
+----------------------------------------------------------------
+alocate pen key to 3 server in host file using vare
+[all:vars]
+        ansible_python_interpreter=/usr/bin/python3
+        ansible_user=ubuntu
+        ansible_ssh_private_key_file=/home/ubuntu/key/ubuntu.pem
+
+-------------------------------------------------------------------------
+	
+	Ansible playbook
+  make playbook folder
+mkdir playbook
+cd playbook
+ vim date_play.yml
+-
+name:date play.yml
+hosts:servers
+tasks:
+-name:shows date
+commands:date
+
+
+run  it
+ ansible-playbook date_play.yml
+
+ansible-playbook -v date_play.yml
+
+
+--------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
